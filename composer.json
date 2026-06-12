@@ -1,11 +1,13 @@
 {
     "name": "php/web-downloads",
+    "description": "Download processing service for downloads.php.net builds",
     "type": "project",
     "license": "MIT",
     "require": {
-      "ext-fileinfo": "*",
-      "ext-curl": "*",
-      "ext-zip": "*"
+        "php": ">=8.4.1",
+        "ext-fileinfo": "*",
+        "ext-curl": "*",
+        "ext-zip": "*"
     },
     "autoload": {
         "classmap": [
@@ -13,6 +15,6 @@
         ]
     },
     "require-dev": {
-        "phpunit/phpunit": "^11"
+        "phpunit/phpunit": "^13"
     }
 }
