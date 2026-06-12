@@ -42,8 +42,7 @@ class PeclCommandTest extends TestCase
     public function testPeclAddSuccessfullyExtractsZip(): void
     {
         $command = new PeclCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
         $result = $command->handle();
         $this->assertEquals(0, $result);
 
@@ -65,8 +64,7 @@ class PeclCommandTest extends TestCase
         $this->assertEquals(1, $result);
 
         Helpers::rmdirr($this->buildsDirectory . '/pecl');
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
         $result = $command->handle();
         $this->assertEquals(0, $result);
     }
@@ -77,8 +75,7 @@ class PeclCommandTest extends TestCase
         file_put_contents($zipPath, 'broken zip');
 
         $command = new PeclCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
         ob_start();
         $result = $command->handle();
         $output = ob_get_clean();
@@ -91,8 +88,7 @@ class PeclCommandTest extends TestCase
         $destinationDirectory = $this->baseDirectory . '/pecl/releases';
         mkdir($destinationDirectory, 0555, true);
         $command = new PeclCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
         ob_start();
         $result = @$command->handle();
         $output = ob_get_clean();

@@ -3,35 +3,31 @@ declare(strict_types=1);
 
 namespace App;
 
-class Validator
+use Stringable;
+
+class Validator implements Stringable
 {
-    function __construct
-    (
-        protected array $rules,
-        protected array $errors = [],
-        protected bool  $valid = false
-    )
-    {
-        //
+    public bool $isValid {
+        get => $this->valid;
     }
 
+    protected(set) array $errors = [];
+
+    public function __construct(
+        protected array $rules,
+        array $errors = [],
+        protected bool  $valid = false
+    ) {
+        $this->errors = $errors;
+    }
 
     public function validate(array $data): void
     {
         $this->errors = [];
 
         foreach ($this->rules as $field => $ruleString) {
-            $regexPos = strpos($ruleString, 'regex:');
-            if ($regexPos !== false) {
-                $nonRegexPart = substr($ruleString, 0, $regexPos);
-                $nonRegexRules = array_filter(explode('|', rtrim($nonRegexPart, '|')));
-                $regexRule = substr($ruleString, $regexPos);
-                $rules = array_merge($nonRegexRules, [$regexRule]);
-            } else {
-                $rules = array_filter(explode('|', $ruleString));
-            }
-            foreach ($rules as $rule) {
-                $ruleParts = explode(':', $rule, 2);
+            foreach ($this->parseRules($ruleString) as $rule) {
+                $ruleParts = explode(':', (string) $rule, 2);
                 $ruleName = $ruleParts[0];
                 $ruleValue = $ruleParts[1] ?? null;
 
@@ -42,16 +38,6 @@ class Validator
         }
 
         $this->valid = empty($this->errors);
-    }
-
-    public function isValid(): bool
-    {
-        return $this->valid;
-    }
-
-    public function errors(): array
-    {
-        return $this->errors;
     }
 
     public function __toString(): string
@@ -65,27 +51,27 @@ class Validator
         return $string;
     }
 
-    protected function required($value): bool
+    protected function required(mixed $value): bool
     {
         return !is_null($value) && $value !== '';
     }
 
-    protected function url($value): bool
+    protected function url(mixed $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_URL) !== false;
     }
 
-    protected function string($value): bool
+    protected function string(mixed $value): bool
     {
         return is_string($value);
     }
 
-    protected function regex($value, $pattern): bool
+    protected function regex(mixed $value, ?string $pattern): bool
     {
-        return is_string($value) && preg_match($pattern, $value) === 1;
+        return is_string($value) && is_string($pattern) && preg_match($pattern, $value) === 1;
     }
 
-    protected function getErrorMessage($field, $rule, $value): string
+    protected function getErrorMessage(string $field, string $rule, ?string $value): string
     {
         $messages = [
             'required' => "The $field field is required.",
@@ -95,5 +81,18 @@ class Validator
         ];
 
         return $messages[$rule] ?? "The $field field has an invalid value.";
+    }
+
+    private function parseRules(string $ruleString): array
+    {
+        $regexPos = strpos($ruleString, 'regex:');
+        if ($regexPos === false) {
+            return array_filter(explode('|', $ruleString));
+        }
+
+        $nonRegexPart = substr($ruleString, 0, $regexPos);
+        $nonRegexRules = array_filter(explode('|', rtrim($nonRegexPart, '|')));
+
+        return array_merge($nonRegexRules, [substr($ruleString, $regexPos)]);
     }
 }

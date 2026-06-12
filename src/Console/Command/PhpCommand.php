@@ -12,8 +12,8 @@ use ZipArchive;
 
 class PhpCommand extends Command
 {
-    protected string $signature = 'php:add --base-directory= --builds-directory=';
-    protected string $description = 'Add php builds';
+    public string $signature = 'php:add --base-directory= --builds-directory=';
+    public string $description = 'Add php builds';
 
     protected ?string $baseDirectory = null;
 
@@ -27,12 +27,12 @@ class PhpCommand extends Command
     public function handle(): int
     {
         try {
-            $this->baseDirectory = $this->getOption('base-directory');
+            $this->baseDirectory = $this->options['base-directory'] ?? null;
             if (!$this->baseDirectory) {
                 throw new Exception('Base directory is required');
             }
 
-            $buildsDirectory = $this->getOption('builds-directory');
+            $buildsDirectory = $this->options['builds-directory'] ?? null;
             if (!$buildsDirectory) {
                 throw new Exception('Build directory is required');
             }
@@ -121,11 +121,15 @@ class PhpCommand extends Command
      */
     private function getBuildVersion(string $tempDirectory): string
     {
-        $testPackFiles = glob($tempDirectory . '/php-test-pack-*.zip');
-        if(empty($testPackFiles)) {
+        $testPackFiles = glob($tempDirectory . '/php-test-pack-*.zip') ?: [];
+        $testPackFile = array_find(
+            $testPackFiles,
+            static fn (string $file): bool => preg_match('/^php-test-pack-.+\.zip$/', basename($file)) === 1
+        );
+        if ($testPackFile === null) {
             throw new Exception('No test pack found in the artifact');
         }
-        $testPackFile = basename($testPackFiles[0]);
+        $testPackFile = basename($testPackFile);
         if (!preg_match('/^php-test-pack-(.+)\.zip$/', $testPackFile, $matches)) {
             throw new Exception('No test pack found in the artifact');
         }
@@ -179,7 +183,7 @@ class PhpCommand extends Command
             $pattern = '/php-/';
         }
         $file = preg_replace($pattern, '', $file);
-        $parts = explode('-', $file);
+        $parts = explode('-', (string) $file);
         return str_replace('.zip', '', $parts[0]);
     }
 

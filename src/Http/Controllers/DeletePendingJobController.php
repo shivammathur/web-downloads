@@ -11,7 +11,7 @@ use RuntimeException;
 
 class DeletePendingJobController extends BaseController
 {
-    private string $buildsDirectory;
+    private readonly string $buildsDirectory;
 
     public function __construct(string $inputPath = 'php://input', ?string $buildsDirectory = null)
     {
@@ -29,7 +29,7 @@ class DeletePendingJobController extends BaseController
 
         $validator->validate($data);
 
-        $valid = $validator->isValid();
+        $valid = $validator->isValid;
 
         if (!$valid) {
             http_response_code(400);
@@ -47,7 +47,7 @@ class DeletePendingJobController extends BaseController
             return;
         }
 
-        $type = strtolower($data['type']);
+        $type = strtolower((string) $data['type']);
         $jobName = $data['job'];
 
         try {

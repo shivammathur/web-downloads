@@ -9,19 +9,19 @@ use ZipArchive;
 
 class PeclCommand extends Command
 {
-    protected string $signature = 'pecl:add --base-directory= --builds-directory=';
+    public string $signature = 'pecl:add --base-directory= --builds-directory=';
 
-    protected string $description = 'Add pecl extensions';
+    public string $description = 'Add pecl extensions';
 
     public function handle(): int
     {
         try {
-            $baseDirectory = $this->getOption('base-directory');
+            $baseDirectory = $this->options['base-directory'] ?? null;
             if (!$baseDirectory) {
                 throw new Exception('Base directory is required');
             }
 
-            $buildsDirectory = $this->getOption('builds-directory');
+            $buildsDirectory = $this->options['builds-directory'] ?? null;
             if (!$buildsDirectory) {
                 throw new Exception('Build directory is required');
             }

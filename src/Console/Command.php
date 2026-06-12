@@ -5,26 +5,32 @@ namespace App\Console;
 
 abstract class Command
 {
-    public const SUCCESS = 0;
-    public const FAILURE = 1;
-    public const INVALID = 2;
+    public const int SUCCESS = 0;
+    public const int FAILURE = 1;
+    public const int INVALID = 2;
 
-    protected string $signature = '';
-    protected string $description = '';
-    protected array $arguments = [];
-    protected array $options = [];
+    public string $name {
+        get => explode(' ', $this->signature)[0];
+    }
+
+    public string $signature = '';
+    public string $description = '';
+    public array $arguments = [];
+    public array $options = [];
+
+    public array $cliArguments {
+        set {
+            $this->parse(count($value), $value);
+        }
+    }
 
     public function __construct() {
         //
     }
 
-    public function setCliArguments(int $argc, array $argv): void {
-        $this->parse($argc, $argv);
-    }
-
     abstract public function handle(): int;
 
-    private function parse($argc, $argv): void {
+    private function parse(int $argc, array $argv): void {
         $pattern = '/\{(\w+)}|\{--(\w+)}/';
         $signatureParts = [];
         if (preg_match_all($pattern, $this->signature, $matches, PREG_SET_ORDER)) {
@@ -35,7 +41,7 @@ abstract class Command
 
         $argCount = 0;
         for ($i = 1; $i < $argc; $i++) {
-            if (preg_match('/^--([^=]+)=(.*)$/', $argv[$i], $matches)) {
+            if (preg_match('/^--([^=]+)=(.*)$/', (string) $argv[$i], $matches)) {
                 $this->options[$matches[1]] = $matches[2];
             } else {
                 if (isset($signatureParts[$argCount])) {
@@ -46,28 +52,5 @@ abstract class Command
                 $argCount++;
             }
         }
-    }
-
-    public function getSignature(): string {
-        return explode(' ', $this->signature)[0];
-    }
-
-    public function getDescription(): string {
-        return $this->description;
-    }
-
-    public function getArgument($index): mixed
-    {
-        return $this->arguments[$index] ?? null;
-    }
-
-    public function getOption($name): mixed
-    {
-        return $this->options[$name] ?? null;
-    }
-
-    public function setOption($name, $value): void
-    {
-        $this->options[$name] = $value;
     }
 }

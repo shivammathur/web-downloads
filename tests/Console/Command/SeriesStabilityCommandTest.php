@@ -41,8 +41,7 @@ class SeriesStabilityCommandTest extends TestCase
     public function testFailsWhenNoSeriesDir(): void
     {
         $command = new SeriesStabilityCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -55,7 +54,7 @@ class SeriesStabilityCommandTest extends TestCase
     public function testMissingBaseDirectory(): void
     {
         $command = new SeriesStabilityCommand();
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -68,7 +67,7 @@ class SeriesStabilityCommandTest extends TestCase
     public function testMissingBuildsDirectory(): void
     {
         $command = new SeriesStabilityCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -98,8 +97,7 @@ class SeriesStabilityCommandTest extends TestCase
         ]));
 
         $command = new SeriesStabilityCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
         $this->assertSame(0, $result);
@@ -135,8 +133,7 @@ class SeriesStabilityCommandTest extends TestCase
         touch($jsonPath . '.lock');
 
         $command = new SeriesStabilityCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
         $this->assertSame(0, $result);
@@ -155,8 +152,7 @@ class SeriesStabilityCommandTest extends TestCase
         file_put_contents($jsonPath, '{corrupt json');
 
         $command = new SeriesStabilityCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -186,8 +182,7 @@ class SeriesStabilityCommandTest extends TestCase
         ]));
 
         $command = new SeriesStabilityCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();

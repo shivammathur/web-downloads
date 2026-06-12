@@ -7,6 +7,7 @@ use App\Actions\FetchArtifact;
 use App\Http\BaseController;
 use App\Validator;
 use Exception;
+use SensitiveParameter;
 
 class PeclController extends BaseController
 {
@@ -21,7 +22,7 @@ class PeclController extends BaseController
 
         $validator->validate($data);
 
-        $valid = $validator->isValid();
+        $valid = $validator->isValid;
 
         if (!$valid) {
             http_response_code(400);
@@ -49,7 +50,7 @@ class PeclController extends BaseController
     /**
      * @throws Exception
      */
-    protected function fetchExtension(string $extension, string $ref, string $url, #[\SensitiveParameter] string $token): void
+    protected function fetchExtension(string $extension, string $ref, string $url, #[SensitiveParameter] string $token): void
     {
         $directory = getenv('BUILDS_DIRECTORY') . "/pecl";
         $filepath = $directory . "/$extension-$ref-" . hash('sha256', $url) . uniqid('', true) . ".zip";

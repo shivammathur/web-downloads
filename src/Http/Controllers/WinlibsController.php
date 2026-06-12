@@ -25,7 +25,7 @@ class WinlibsController extends BaseController
 
         $validator->validate($data);
 
-        $valid = $validator->isValid();
+        $valid = $validator->isValid;
 
         if (!$valid) {
             http_response_code(400);

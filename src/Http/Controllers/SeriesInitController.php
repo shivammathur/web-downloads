@@ -18,7 +18,7 @@ class SeriesInitController extends BaseController
 
         $validator->validate($data);
 
-        $valid = $validator->isValid();
+        $valid = $validator->isValid;
 
         if (!$valid) {
             http_response_code(400);
@@ -31,7 +31,7 @@ class SeriesInitController extends BaseController
     protected function execute(array $data): void
     {
         $directory = getenv('BUILDS_DIRECTORY') . '/series';
-        $hash = hash('sha256', $data['php_version']) . uniqid('', true);
+        $hash = hash('sha256', (string) $data['php_version']) . uniqid('', true);
         $file = $directory . '/series-init-' . $hash . '.json';
         file_put_contents($file, json_encode($data));
     }

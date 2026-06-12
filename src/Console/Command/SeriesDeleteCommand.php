@@ -8,20 +8,20 @@ use Exception;
 
 class SeriesDeleteCommand extends Command
 {
-    protected string $signature = 'series:delete --base-directory= --builds-directory=';
-    protected string $description = 'Delete series files for libraries';
+    public string $signature = 'series:delete --base-directory= --builds-directory=';
+    public string $description = 'Delete series files for libraries';
 
     protected ?string $baseDirectory = null;
 
     public function handle(): int
     {
         try {
-            $this->baseDirectory = $this->getOption('base-directory');
+            $this->baseDirectory = $this->options['base-directory'] ?? null;
             if (!$this->baseDirectory) {
                 throw new Exception('Base directory is required');
             }
 
-            $buildsDirectory = $this->getOption('builds-directory');
+            $buildsDirectory = $this->options['builds-directory'] ?? null;
             if (!$buildsDirectory) {
                 throw new Exception('Build directory is required');
             }

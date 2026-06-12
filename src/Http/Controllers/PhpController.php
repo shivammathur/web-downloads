@@ -7,6 +7,7 @@ use App\Actions\FetchArtifact;
 use App\Http\BaseController;
 use App\Validator;
 use Exception;
+use SensitiveParameter;
 
 class PhpController extends BaseController
 {
@@ -19,7 +20,7 @@ class PhpController extends BaseController
 
         $validator->validate($data);
 
-        $valid = $validator->isValid();
+        $valid = $validator->isValid;
 
         if (!$valid) {
             http_response_code(400);
@@ -42,7 +43,7 @@ class PhpController extends BaseController
     /**
      * @throws Exception
      */
-    private function fetchPhpBuild(string $url, #[\SensitiveParameter] string $token): void
+    private function fetchPhpBuild(string $url, #[SensitiveParameter] string $token): void
     {
         $hash = hash('sha256', $url) . uniqid('', true);
 

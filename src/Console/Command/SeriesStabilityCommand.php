@@ -8,20 +8,20 @@ use Exception;
 
 class SeriesStabilityCommand extends Command
 {
-    protected string $signature = 'series:stability --base-directory= --builds-directory=';
-    protected string $description = 'Promote staging series files to stable for libraries';
+    public string $signature = 'series:stability --base-directory= --builds-directory=';
+    public string $description = 'Promote staging series files to stable for libraries';
 
     protected ?string $baseDirectory = null;
 
     public function handle(): int
     {
         try {
-            $this->baseDirectory = $this->getOption('base-directory');
+            $this->baseDirectory = $this->options['base-directory'] ?? null;
             if (!$this->baseDirectory) {
                 throw new Exception('Base directory is required');
             }
 
-            $buildsDirectory = $this->getOption('builds-directory');
+            $buildsDirectory = $this->options['builds-directory'] ?? null;
             if (!$buildsDirectory) {
                 throw new Exception('Build directory is required');
             }

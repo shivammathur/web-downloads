@@ -41,8 +41,7 @@ class SeriesInitCommandTest extends TestCase
     public function testFailsWhenNoSeriesDir(): void
     {
         $command = new SeriesInitCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -55,7 +54,7 @@ class SeriesInitCommandTest extends TestCase
     public function testMissingBaseDirectory(): void
     {
         $command = new SeriesInitCommand();
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -68,7 +67,7 @@ class SeriesInitCommandTest extends TestCase
     public function testMissingBuildsDirectory(): void
     {
         $command = new SeriesInitCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -104,8 +103,7 @@ class SeriesInitCommandTest extends TestCase
         ]));
 
         $command = new SeriesInitCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
         $this->assertSame(0, $result, 'Command should return success.');
@@ -160,8 +158,7 @@ class SeriesInitCommandTest extends TestCase
         touch($jsonPath . '.lock');
 
         $command = new SeriesInitCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
         $this->assertSame(0, $result);
@@ -183,8 +180,7 @@ class SeriesInitCommandTest extends TestCase
         file_put_contents($jsonPath, '{corrupt json');
 
         $command = new SeriesInitCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -217,8 +213,7 @@ class SeriesInitCommandTest extends TestCase
         ]));
 
         $command = new SeriesInitCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();

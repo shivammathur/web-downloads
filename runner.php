@@ -17,7 +17,7 @@ function getClassname($directory, $file): string
     return str_replace('.php', '', $className);
 }
 
-function discoverCommands(string $directory, $argc, $argv): array
+function discoverCommands(string $directory, array $argv): array
 {
     $commands = [];
     foreach (
@@ -29,8 +29,8 @@ function discoverCommands(string $directory, $argc, $argv): array
             $className = getClassName($directory, $file);
             if (is_subclass_of($className, Command::class)) {
                 $instance = resolve($className);
-                $instance->setCliArguments($argc, $argv);
-                $commands[$instance->getSignature()] = $instance;
+                $instance->cliArguments = $argv;
+                $commands[$instance->name] = $instance;
             }
         }
     }
@@ -64,11 +64,11 @@ function listCommands(array $commands): void
     echo "Available commands:\n";
     /** @var Command $command */
     foreach ($commands as $signature => $command) {
-        echo $signature . " - " . $command->getDescription() . "\n";
+        echo $signature . " - " . $command->description . "\n";
     }
 }
 
-$commands = discoverCommands($consoleDirectory, $argc, $argv);
+$commands = discoverCommands($consoleDirectory, $argv);
 
 $commandInput = $argv[1] ?? 'help';
 
@@ -78,7 +78,7 @@ if (in_array($commandInput, ['help', '--help', '-h', '?'], true)) {
 }
 
 if (isset($commands[$commandInput])) {
-    $status = $commands[$commandInput]->handle($argc, $argv);
+    $status = $commands[$commandInput]->handle();
     exit($status);
 } else {
     echo "Command not found\n";

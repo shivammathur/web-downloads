@@ -6,23 +6,24 @@ namespace App\Console\Command;
 use App\Console\Command;
 use App\Helpers\Helpers;
 use Exception;
+use JsonException;
 
 class WinlibsCommand extends Command
 {
-    protected string $signature = 'winlibs:add --base-directory= --builds-directory=';
-    protected string $description = 'Add winlibs dependencies';
+    public string $signature = 'winlibs:add --base-directory= --builds-directory=';
+    public string $description = 'Add winlibs dependencies';
 
     protected ?string $baseDirectory = null;
 
     public function handle(): int
     {
         try {
-            $this->baseDirectory = $this->getOption('base-directory');
+            $this->baseDirectory = $this->options['base-directory'] ?? null;
             if (!$this->baseDirectory) {
                 throw new Exception('Base directory is required');
             }
 
-            $buildsDirectory = $this->getOption('builds-directory');
+            $buildsDirectory = $this->options['builds-directory'] ?? null;
             if (!$buildsDirectory) {
                 throw new Exception('Build directory is required');
             }
@@ -47,23 +48,21 @@ class WinlibsCommand extends Command
                 if (empty($files)) {
                     throw new Exception('No valid files found in ' . basename($directoryPath));
                 }
-                if ($files) {
-                    if($data['type'] === 'php') {
-                        $this->copyPhpFiles($files, $data['library'], $data['vs_version_targets']);
-                        $updateSeries = $data['update_series'] ?? 'true';
-                        if ($updateSeries === 'true') {
-                            $this->updatePhpSeriesFiles(
-                                $files,
-                                $data['library'],
-                                $data['php_versions'],
-                                $data['vs_version_targets'],
-                                $data['stability']
-                            );
-                        }
-                    } else {
-                        $this->copyPeclFiles($files, $data['library']);
-                        $this->updatePackagesFile($files, $data['library']);
+                if($data['type'] === 'php') {
+                    $this->copyPhpFiles($files, $data['library'], $data['vs_version_targets']);
+                    $updateSeries = $data['update_series'] ?? 'true';
+                    if ($updateSeries === 'true') {
+                        $this->updatePhpSeriesFiles(
+                            $files,
+                            $data['library'],
+                            $data['php_versions'],
+                            $data['vs_version_targets'],
+                            $data['stability']
+                        );
                     }
+                } else {
+                    $this->copyPeclFiles($files, $data['library']);
+                    $this->updatePackagesFile();
                 }
 
                 Helpers::rmdirr($directoryPath);
@@ -81,7 +80,7 @@ class WinlibsCommand extends Command
     {
         $data = [];
         foreach ($files as $file) {
-            $fileName = basename($file);
+            $fileName = basename((string) $file);
             $pattern = '/^(?P<artifact>.+?)-(?P<version>\d.*)-(?P<vs>v[c|s]\d+)-(?P<arch>[^.]+)\.zip$/';
             if (!preg_match($pattern, $fileName, $matches)) {
                 continue;
@@ -129,6 +128,9 @@ class WinlibsCommand extends Command
         }
     }
 
+    /**
+     * @throws JsonException
+     */
     private function updatePhpSeriesFiles(
         array  $files,
         string $library,
@@ -211,7 +213,7 @@ class WinlibsCommand extends Command
         }
     }
 
-    private function updatePackagesFile(array $files, string $library): void
+    private function updatePackagesFile(): void
     {
         $baseDirectory = $this->baseDirectory . "/pecl/deps";
         $packagesFile = $baseDirectory . "/packages.txt";
@@ -223,7 +225,7 @@ class WinlibsCommand extends Command
         $artifacts = glob($baseDirectory . '/*.zip');
         sort($artifacts);
 
-        $fileLines = array_map('basename', $artifacts);
+        $fileLines = array_map(basename(...), $artifacts);
 
         file_put_contents($packagesFile, implode("\n", $fileLines));
     }

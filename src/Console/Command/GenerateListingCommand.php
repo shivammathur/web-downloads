@@ -10,8 +10,8 @@ use Exception;
 
 class GenerateListingCommand extends Command
 {
-    protected string $signature = 'php:generate-listing --directory=';
-    protected string $description = 'Generate Listing for PHP builds in a directory';
+    public string $signature = 'php:generate-listing --directory=';
+    public string $description = 'Generate Listing for PHP builds in a directory';
 
     public function __construct(
         protected GetListing $generateListing,
@@ -23,7 +23,7 @@ class GenerateListingCommand extends Command
     public function handle(): int
     {
         try {
-            $directory = $this->getOption('directory');
+            $directory = $this->options['directory'] ?? null;
             if (!$directory) {
                 throw new Exception('Directory is required');
             }

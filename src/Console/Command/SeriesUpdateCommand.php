@@ -8,20 +8,20 @@ use Exception;
 
 class SeriesUpdateCommand extends Command
 {
-    protected string $signature = 'series:update --base-directory= --builds-directory=';
-    protected string $description = 'Update or remove libraries in series package files';
+    public string $signature = 'series:update --base-directory= --builds-directory=';
+    public string $description = 'Update or remove libraries in series package files';
 
     protected ?string $baseDirectory = null;
 
     public function handle(): int
     {
         try {
-            $this->baseDirectory = $this->getOption('base-directory');
+            $this->baseDirectory = $this->options['base-directory'] ?? null;
             if (!$this->baseDirectory) {
                 throw new Exception('Base directory is required');
             }
 
-            $buildsDirectory = $this->getOption('builds-directory');
+            $buildsDirectory = $this->options['builds-directory'] ?? null;
             if (!$buildsDirectory) {
                 throw new Exception('Build directory is required');
             }

@@ -61,8 +61,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -100,8 +99,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -139,8 +137,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -177,8 +174,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -278,8 +274,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -326,8 +321,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -367,8 +361,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -415,8 +408,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -469,8 +461,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
 
@@ -501,8 +492,7 @@ class WinlibsCommandTest extends TestCase
         file_put_contents($this->winlibsDirectory . '/lib/data.json', '{corrupt json');
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
         ob_start();
         $result = $command->handle();
         $output = ob_get_clean();
@@ -525,8 +515,7 @@ class WinlibsCommandTest extends TestCase
         file_put_contents($this->winlibsDirectory . '/lib/not-a-valid-file.zip', 'dummy');
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
         ob_start();
         $result = $command->handle();
         $output = ob_get_clean();
@@ -635,8 +624,7 @@ class WinlibsCommandTest extends TestCase
         }
 
         $command = new WinlibsCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         return $command->handle();
     }

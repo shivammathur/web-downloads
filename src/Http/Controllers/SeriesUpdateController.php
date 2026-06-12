@@ -20,7 +20,7 @@ class SeriesUpdateController extends BaseController
 
         $validator->validate($data);
 
-        if (!$validator->isValid()) {
+        if (!$validator->isValid) {
             http_response_code(400);
             echo 'Invalid request: ' . $validator;
             return false;

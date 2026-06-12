@@ -104,8 +104,7 @@ class PhpCommandTest extends TestCase
     public function testCommandHandlesSuccessfulExecution(array $phpZips): void
     {
         $command = new PhpCommand((new GetListing()), (new UpdateReleasesJson()));
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $this->stageBuilds($phpZips, $this->buildsDirectory . '/php/test.zip');
 
@@ -120,8 +119,7 @@ class PhpCommandTest extends TestCase
     public function testCommandHandlerWithMissingTestPackZip(): void
     {
         $command = new PhpCommand(new GetListing(), new UpdateReleasesJson());
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $this->stageBuilds(['php-8.4.0-dev-Win32-vs17-x64.zip'], $this->buildsDirectory . '/php/test.zip');
         ob_start();
@@ -146,8 +144,7 @@ class PhpCommandTest extends TestCase
         $zipPath = $this->buildsDirectory . '/php/broken.zip';
         file_put_contents($zipPath, "invalid zip content");
         $command = new PhpCommand(new GetListing(), new UpdateReleasesJson());
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
         ob_start();
         $result = $command->handle();
         ob_get_clean();
@@ -157,8 +154,7 @@ class PhpCommandTest extends TestCase
     public function testCleanupAfterCommand(): void
     {
         $command = new PhpCommand(new GetListing(), new UpdateReleasesJson());
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
         $command->handle();
         $tempDirectory = "/tmp/php-*";
         $this->assertEmpty(glob($tempDirectory));
@@ -167,8 +163,7 @@ class PhpCommandTest extends TestCase
     public function testStableReleasePromotesSeriesFiles(): void
     {
         $command = new PhpCommand(new GetListing(), new UpdateReleasesJson());
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $this->stageBuilds(self::buildsProvider()[0][0], $this->buildsDirectory . '/php/test.zip');
 
@@ -184,8 +179,7 @@ class PhpCommandTest extends TestCase
     public function testQaReleaseDoesNotPromoteSeriesFiles(): void
     {
         $command = new PhpCommand(new GetListing(), new UpdateReleasesJson());
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $this->stageBuilds(self::buildsProvider()[1][0], $this->buildsDirectory . '/php/test.zip');
 

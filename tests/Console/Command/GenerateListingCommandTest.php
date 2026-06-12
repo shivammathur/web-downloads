@@ -18,12 +18,11 @@ class GenerateListingCommandTest extends TestCase
      */
     public function testHandleWithoutDirectory(): void
     {
-        $getListing = $this->createMock(GetListing::class);
-        $updateReleasesJson = $this->createMock(UpdateReleasesJson::class);
+        $getListing = $this->createStub(GetListing::class);
+        $updateReleasesJson = $this->createStub(UpdateReleasesJson::class);
         $command = new GenerateListingCommand($getListing, $updateReleasesJson);
         $argv = ['script.php', 'php:add'];
-        $argc = count($argv);
-        $command->setCliArguments($argc, $argv);
+        $command->cliArguments = $argv;
 
         ob_start();
         $result = $command->handle();
@@ -56,8 +55,7 @@ class GenerateListingCommandTest extends TestCase
         $command = new GenerateListingCommand($getListing, $updateReleasesJson);
 
         $argv = ['script.php', 'php:add', '--directory=' . $directory];
-        $argc = count($argv);
-        $command->setCliArguments($argc, $argv);
+        $command->cliArguments = $argv;
 
         $result = $command->handle();
 
@@ -84,8 +82,7 @@ class GenerateListingCommandTest extends TestCase
 
         $command = new GenerateListingCommand($getListing, $updateReleasesJson);
         $argv = ['script.php', 'php:add', '--directory=' . $directory];
-        $argc = count($argv);
-        $command->setCliArguments($argc, $argv);
+        $command->cliArguments = $argv;
 
         ob_start();
         $result = $command->handle();

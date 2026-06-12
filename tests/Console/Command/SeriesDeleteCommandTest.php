@@ -41,8 +41,7 @@ class SeriesDeleteCommandTest extends TestCase
     public function testFailsWhenNoSeriesDir(): void
     {
         $command = new SeriesDeleteCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -55,7 +54,7 @@ class SeriesDeleteCommandTest extends TestCase
     public function testMissingBaseDirectory(): void
     {
         $command = new SeriesDeleteCommand();
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -68,7 +67,7 @@ class SeriesDeleteCommandTest extends TestCase
     public function testMissingBuildsDirectory(): void
     {
         $command = new SeriesDeleteCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory];
 
         ob_start();
         $result = $command->handle();
@@ -105,8 +104,7 @@ class SeriesDeleteCommandTest extends TestCase
         clearstatcache(true);
 
         $command = new SeriesDeleteCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
         $this->assertSame(0, $result, 'Command should return success.');
@@ -148,8 +146,7 @@ class SeriesDeleteCommandTest extends TestCase
         clearstatcache(true);
 
         $command = new SeriesDeleteCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
         $this->assertSame(0, $result);
@@ -188,8 +185,7 @@ class SeriesDeleteCommandTest extends TestCase
         clearstatcache(true);
 
         $command = new SeriesDeleteCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         $result = $command->handle();
         $this->assertSame(0, $result);
@@ -216,8 +212,7 @@ class SeriesDeleteCommandTest extends TestCase
         file_put_contents($jsonPath, '{corrupt json');
 
         $command = new SeriesDeleteCommand();
-        $command->setOption('base-directory', $this->baseDirectory);
-        $command->setOption('builds-directory', $this->buildsDirectory);
+        $command->options = ['base-directory' => $this->baseDirectory, 'builds-directory' => $this->buildsDirectory];
 
         ob_start();
         $result = $command->handle();
