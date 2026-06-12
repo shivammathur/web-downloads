@@ -4,8 +4,11 @@ declare(strict_types=1);
 namespace Http\Controllers;
 
 use App\Http\Controllers\ListBuildsController;
+use FilesystemIterator;
 use JsonException;
 use PHPUnit\Framework\TestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class ListBuildsControllerTest extends TestCase
 {
@@ -55,8 +58,6 @@ class ListBuildsControllerTest extends TestCase
         } catch (JsonException $exception) {
             static::fail('Response is not valid JSON: ' . $exception->getMessage());
         }
-
-        return [];
     }
 
     private function createTempBuildDirectory(): string
@@ -76,9 +77,9 @@ class ListBuildsControllerTest extends TestCase
 
     private function removeDirectory(string $path): void
     {
-        $items = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        $items = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($items as $item) {

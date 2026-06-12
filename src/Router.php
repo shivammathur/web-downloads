@@ -9,7 +9,7 @@ use JsonException;
 class Router
 {
     private array $routes = [];
-    private Auth $auth;
+    private readonly Auth $auth;
 
     public function __construct()
     {

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Http\Controllers;
 
 use App\Http\BaseController;
+use JsonException;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 class MockPeclController extends BaseController {
@@ -15,6 +17,7 @@ class MockPeclController extends BaseController {
         echo "Executed";
     }
 
+    #[Override]
     public function handle(): void
     {
         $data = json_decode(file_get_contents($this->inputPath), true);
@@ -26,6 +29,9 @@ class MockPeclController extends BaseController {
 }
 
 class PeclControllerTest extends TestCase {
+    /**
+     * @throws JsonException
+     */
     public function testHandleWithValidData() {
         $data = json_encode(["key" => "value"]);
         $tempFile = tempnam(sys_get_temp_dir(), 'phpunit');

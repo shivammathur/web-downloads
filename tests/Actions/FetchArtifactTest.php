@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Actions;
 
 use App\Actions\FetchArtifact;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 class MockFetchArtifact extends FetchArtifact {
 
+    #[Override]
     public function handle($url, $filepath, $token = null): void
     {
         file_put_contents($filepath, $url . $token);

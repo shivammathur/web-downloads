@@ -5,10 +5,12 @@ namespace Actions;
 
 use App\Actions\GetArtifacts;
 use App\Helpers\Helpers;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 class MockGetArtifacts extends GetArtifacts {
 
+    #[Override]
     public function handle($workflow_run_id, $token): void
     {
         $data = [

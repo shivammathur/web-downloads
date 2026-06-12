@@ -48,7 +48,7 @@ class ListBuildsController implements ControllerInterface
                 continue;
             }
 
-            $relativePath = substr($fileInfo->getPathname(), strlen($normalizedRoot) + 1);
+            $relativePath = substr((string) $fileInfo->getPathname(), strlen($normalizedRoot) + 1);
 
             $entries[] = [
                 'path' => $relativePath,

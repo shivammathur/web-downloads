@@ -3,16 +3,19 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use RuntimeException;
+use SensitiveParameter;
+
 class FetchArtifact
 {
-    public function handle($url, $filepath, #[\SensitiveParameter] $token = null): void
+    public function handle($url, $filepath, #[SensitiveParameter] $token = null): void
     {
         $ch = curl_init();
         $fp = fopen($filepath, 'w');
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_FILE, $fp);
-        if (str_contains($url, 'api.github.com')) {
+        if (str_contains((string) $url, 'api.github.com')) {
             $headers = [
                 'Accept: application/vnd.github+json',
                 'User-Agent: PHP Web Downloads',
@@ -30,11 +33,11 @@ class FetchArtifact
         fclose($fp);
         if ($result === false) {
             unlink($filepath);
-            throw new \RuntimeException('cURL error: ' . $error);
+            throw new RuntimeException('cURL error: ' . $error);
         }
         if ($httpCode >= 400) {
             unlink($filepath);
-            throw new \RuntimeException('HTTP error: ' . $httpCode);
+            throw new RuntimeException('HTTP error: ' . $httpCode);
         }
     }
 }

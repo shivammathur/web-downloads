@@ -4,9 +4,13 @@ declare(strict_types=1);
 namespace Http\Controllers;
 
 use App\Http\Controllers\IndexController;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 
 class IndexControllerTest extends TestCase {
+    /**
+     * @throws JsonException
+     */
     public function testHandle() {
         $controller = new IndexController();
         $controller->handle();

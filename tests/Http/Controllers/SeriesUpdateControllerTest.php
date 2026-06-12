@@ -5,6 +5,7 @@ namespace Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Http\Controllers\SeriesUpdateController;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 
 class SeriesUpdateControllerTest extends TestCase
@@ -29,6 +30,9 @@ class SeriesUpdateControllerTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * @throws JsonException
+     */
     public function testEnqueuesUpdateTask(): void
     {
         $payload = [
@@ -52,6 +56,9 @@ class SeriesUpdateControllerTest extends TestCase
         $this->assertSame($payload, $taskData);
     }
 
+    /**
+     * @throws JsonException
+     */
     public function testEnqueuesDeleteTaskWithoutPackage(): void
     {
         $payload = [
@@ -75,6 +82,9 @@ class SeriesUpdateControllerTest extends TestCase
         $this->assertSame($payload, $taskData);
     }
 
+    /**
+     * @throws JsonException
+     */
     public function testRejectsInvalidLibraryName(): void
     {
         $payload = [
@@ -97,6 +107,9 @@ class SeriesUpdateControllerTest extends TestCase
         $this->assertEmpty(glob($this->buildsDirectory . '/series/series-update-*.json'));
     }
 
+    /**
+     * @throws JsonException
+     */
     public function testRejectsInvalidRefFormat(): void
     {
         $payload = [

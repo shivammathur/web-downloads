@@ -5,6 +5,7 @@ namespace Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Http\Controllers\DeletePendingJobController;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 
 class DeletePendingJobControllerTest extends TestCase
@@ -25,6 +26,9 @@ class DeletePendingJobControllerTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * @throws JsonException
+     */
     public function testDeletesPhpJobAndLock(): void
     {
         $phpDir = $this->tempDir . '/php';
@@ -50,6 +54,9 @@ class DeletePendingJobControllerTest extends TestCase
         unlink($inputFile);
     }
 
+    /**
+     * @throws JsonException
+     */
     public function testDeletesWinlibsJobDirectory(): void
     {
         $winlibsDir = $this->tempDir . '/winlibs';
@@ -75,6 +82,9 @@ class DeletePendingJobControllerTest extends TestCase
         unlink($inputFile);
     }
 
+    /**
+     * @throws JsonException
+     */
     public function testReturns404WhenJobMissing(): void
     {
         $payload = json_encode(['type' => 'pecl', 'job' => 'missing.zip'], JSON_THROW_ON_ERROR);

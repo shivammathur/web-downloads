@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Helpers\Helpers;
+use SensitiveParameter;
 
 class GetArtifacts
 {
-    public function handle($workflow_run_id, #[\SensitiveParameter] $token): void
+    public function handle($workflow_run_id, #[SensitiveParameter] $token): void
     {
         $ch = curl_init();
 

@@ -69,7 +69,7 @@ class UpdateReleasesJsonTest extends TestCase
         $jsonData = json_decode(file_get_contents($jsonFile), true);
         $this->assertNotNull($jsonData, 'Decoded JSON should not be null.');
 
-        $expectedDate = (new DateTimeImmutable("2023-01-01 10:00:00"))->format('c');
+        $expectedDate = new DateTimeImmutable("2023-01-01 10:00:00")->format('c');
 
         $this->assertEquals(
             $expectedDate,
@@ -84,7 +84,7 @@ class UpdateReleasesJsonTest extends TestCase
     public function testHandleWithInvalidMtimeThrowsException(): void
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Failed to generate releases.json:');
+        $this->expectExceptionMessageIsOrContains('Failed to generate releases.json:');
 
         $releases = [
             '7.4' => [
@@ -99,7 +99,7 @@ class UpdateReleasesJsonTest extends TestCase
             ],
         ];
 
-        (new UpdateReleasesJson())->handle($releases, $this->tempDir);
+        new UpdateReleasesJson()->handle($releases, $this->tempDir);
     }
 
     /**
