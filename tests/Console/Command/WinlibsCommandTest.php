@@ -226,12 +226,12 @@ class WinlibsCommandTest extends TestCase
             file($packagesFile, FILE_IGNORE_NEW_LINES)
         );
 
-        $this->runPeclWinlibsCommand('redis', 'phpredis', '5.3.8', 'vs16', 'x64');
+        $this->runPeclWinlibsCommand('redis', 'phpredis', '5.3.8', 'vs17', 'x64');
         $this->assertSame(
             [
                 'imagick-3.7.0-vs16-x64.zip',
                 'phpredis-5.3.7-vs16-x64.zip',
-                'phpredis-5.3.8-vs16-x64.zip',
+                'phpredis-5.3.8-vs17-x64.zip',
             ],
             file($packagesFile, FILE_IGNORE_NEW_LINES)
         );
