@@ -166,9 +166,16 @@ class PhpCommand extends Command
         foreach ($files as $file) {
             $fileVersion = $this->getFileVersion($file);
             if ($fileVersion) {
-                copy($directory . '/' . basename($file), $directory . '/archives/' . basename($file));
+                copy($file, $directory . '/archives/' . basename($file));
+                $sidecars = glob($file . '.*.json') ?: [];
+                foreach ($sidecars as $sidecar) {
+                    copy($sidecar, $directory . '/archives/' . basename($sidecar));
+                }
                 if (version_compare($fileVersion, $version) < 0) {
                     unlink($file);
+                    foreach ($sidecars as $sidecar) {
+                        unlink($sidecar);
+                    }
                 }
             }
         }
