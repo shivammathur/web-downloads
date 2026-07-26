@@ -327,6 +327,7 @@ class SeriesUpdateCommandTest extends TestCase
         $this->assertSame(0, $command->handle());
         $destination = $this->baseDirectory . '/php-sdk/sbom/php-8.2.json';
         $this->assertFileExists($destination);
+        $this->assertSame(0644, fileperms($destination) & 0777);
         $metadata = json_decode(file_get_contents($destination), true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame('PHP-3.01', $metadata['license']);
         $this->assertSame('pcre2lib', $metadata['components'][0]['name']);

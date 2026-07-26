@@ -137,6 +137,7 @@ class SeriesUpdateCommand extends Command
                     $temporary,
                     json_encode($metadata, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n"
                 ) === false
+                || !chmod($temporary, 0644)
                 || !rename($temporary, $destination)) {
             throw new Exception("Could not publish '$destination'");
         }
