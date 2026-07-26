@@ -298,6 +298,41 @@ class SeriesUpdateCommandTest extends TestCase
         $this->assertFileExists($taskFile . '.lock');
     }
 
+    public function testPublishesSbomMetadata(): void
+    {
+        $metadata = [
+            'license' => 'PHP-3.01',
+            'components' => [
+                [
+                    'name' => 'pcre2lib',
+                    'version' => '10.40',
+                    'path' => 'ext/pcre/pcre2lib',
+                    'license' => 'BSD-3-Clause WITH PCRE2-exception',
+                    'purl' => 'pkg:generic/pcre2@10.40',
+                ],
+            ],
+        ];
+        $taskFile = $this->createTask([
+            'type' => 'sbom',
+            'php_version' => '8.2',
+            'sbom' => $metadata,
+        ]);
+
+        $command = new SeriesUpdateCommand();
+        $command->options = [
+            'base-directory' => $this->baseDirectory,
+            'builds-directory' => $this->buildsDirectory,
+        ];
+
+        $this->assertSame(0, $command->handle());
+        $destination = $this->baseDirectory . '/php-sdk/sbom/php-8.2.json';
+        $this->assertFileExists($destination);
+        $metadata = json_decode(file_get_contents($destination), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame('PHP-3.01', $metadata['license']);
+        $this->assertSame('pcre2lib', $metadata['components'][0]['name']);
+        $this->assertFileDoesNotExist($taskFile);
+    }
+
     private function createTask(array $data): string
     {
         $seriesDir = $this->buildsDirectory . '/series';

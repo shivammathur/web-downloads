@@ -246,6 +246,7 @@ curl -i -X POST \
     - `stability` (string, required): Either `stable` or `staging`.
     - `library` (string, required): Library identifier to update/remove.
     - `ref` (string, required but may be empty): Matches `^([a-zA-Z0-9\.-]+)?$`, When non-empty, updates/creates entries named `<library>-<ref>-<vs_version>-<arch>.zip` for both `x86` and `x64`; when empty, removes the library from both files if present.
+    - For an SBOM metadata update, send `php_version` and an `sbom` object instead of the series fields.
 - Success: `200 OK`, empty body.
 - Errors:
     - `400` with validation details if the payload is invalid.
@@ -281,6 +282,28 @@ curl -i -X POST \
             "stability": "stable",
             "library": "libxml2",
             "ref": ""
+        }' \
+    https://downloads.php.net/api/series-update
+```
+
+Example (SBOM metadata)
+
+```bash
+curl -i -X POST \
+    -H "Authorization: Bearer $AUTH_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{
+            "php_version": "8.2",
+            "sbom": {
+                "license": "PHP-3.01",
+                "components": [{
+                    "name": "pcre2lib",
+                    "version": "10.40",
+                    "path": "ext/pcre/pcre2lib",
+                    "license": "BSD-3-Clause WITH PCRE2-exception",
+                    "purl": "pkg:generic/pcre2@10.40"
+                }]
+            }
         }' \
     https://downloads.php.net/api/series-update
 ```

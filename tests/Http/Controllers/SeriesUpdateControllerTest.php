@@ -132,6 +132,28 @@ class SeriesUpdateControllerTest extends TestCase
         $this->assertEmpty(glob($this->buildsDirectory . '/series/series-update-*.json'));
     }
 
+    public function testEnqueuesSbomUpdate(): void
+    {
+        $payload = [
+            'php_version' => '8.2',
+            'sbom' => [
+                'license' => 'PHP-3.01',
+                'components' => [],
+            ],
+        ];
+        $inputPath = $this->createInputFile($payload);
+
+        (new SeriesUpdateController($inputPath))->handle();
+        unlink($inputPath);
+
+        $taskFiles = glob($this->buildsDirectory . '/series/series-update-*.json');
+        $this->assertCount(1, $taskFiles);
+        $task = json_decode(file_get_contents($taskFiles[0]), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame('sbom', $task['type']);
+        $this->assertSame($payload['php_version'], $task['php_version']);
+        $this->assertSame($payload['sbom'], $task['sbom']);
+    }
+
     private function createInputFile(array $data): string
     {
         $path = tempnam(sys_get_temp_dir(), 'series-update-input-');

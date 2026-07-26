@@ -10,13 +10,18 @@ class SeriesUpdateController extends BaseController
 {
     protected function validate(array $data): bool
     {
-        $validator = new Validator([
-            'php_version' => 'required|string|regex:/^(?:\d+\.\d+|master)$/',
-            'vs_version' => 'required|string|regex:/^v[c|s]\d{2}$/',
-            'stability' => 'required|string|regex:/^(stable|staging)$/',
-            'library' => 'required|string|regex:/^[a-zA-Z0-9_-]+$/',
-            'ref' => 'string|regex:/^([a-zA-Z0-9\.-]+)?$/',
-        ]);
+        $validator = new Validator(isset($data['sbom'])
+            ? [
+                'php_version' => 'required|string|regex:/^(?:\d+\.\d+|master)$/',
+                'sbom' => 'required|array',
+            ]
+            : [
+                'php_version' => 'required|string|regex:/^(?:\d+\.\d+|master)$/',
+                'vs_version' => 'required|string|regex:/^v[c|s]\d{2}$/',
+                'stability' => 'required|string|regex:/^(stable|staging)$/',
+                'library' => 'required|string|regex:/^[a-zA-Z0-9_-]+$/',
+                'ref' => 'string|regex:/^([a-zA-Z0-9\.-]+)?$/',
+            ]);
 
         $validator->validate($data);
 
@@ -43,15 +48,23 @@ class SeriesUpdateController extends BaseController
             mkdir($seriesDirectory, 0755, true);
         }
 
-        $payload = [
-            'php_version' => $data['php_version'],
-            'vs_version' => $data['vs_version'],
-            'stability' => $data['stability'],
-            'library' => $data['library'],
-            'ref' => $data['ref'],
-        ];
+        $payload = isset($data['sbom'])
+            ? [
+                'type' => 'sbom',
+                'php_version' => $data['php_version'],
+                'sbom' => $data['sbom'],
+            ]
+            : [
+                'php_version' => $data['php_version'],
+                'vs_version' => $data['vs_version'],
+                'stability' => $data['stability'],
+                'library' => $data['library'],
+                'ref' => $data['ref'],
+            ];
 
-        $hash = hash('sha256', $data['php_version'] . $data['vs_version'] . $data['library']) . uniqid('', true);
+        $hash = isset($data['sbom'])
+            ? hash('sha256', $data['php_version'] . json_encode($data['sbom'])) . uniqid('', true)
+            : hash('sha256', $data['php_version'] . $data['vs_version'] . $data['library']) . uniqid('', true);
         $file = $seriesDirectory . '/series-update-' . $hash . '.json';
 
         file_put_contents($file, json_encode($payload));
