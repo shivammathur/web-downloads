@@ -48,6 +48,9 @@ class PhpCommandTest extends TestCase
         return [
             [[
                 'php-8.4.1-Win32-vs17-x64.zip',
+                'php-8.4.1-Win32-vs17-x64.zip.cdx.json',
+                'php-8.4.1-Win32-vs17-x64.zip.spdx.json',
+                'php-8.4.1-Win32-vs17-x64.zip.openvex.json',
                 'php-8.4.1-Win32-vs17-x86.zip',
                 'php-8.4.1-nts-Win32-vs17-x64.zip',
                 'php-8.4.1-nts-Win32-vs17-x86.zip',
@@ -63,6 +66,8 @@ class PhpCommandTest extends TestCase
                 'php-test-pack-8.4.1.zip',
             ]],[[
                 'php-8.4.0-dev-Win32-vs17-x64.zip',
+                'php-8.4.0-dev-Win32-vs17-x64.zip.cdx.json',
+                'php-8.4.0-dev-Win32-vs17-x64.zip.spdx.json',
                 'php-8.4.0-dev-Win32-vs17-x86.zip',
                 'php-8.4.0-dev-nts-Win32-vs17-x64.zip',
                 'php-8.4.0-dev-nts-Win32-vs17-x86.zip',
@@ -86,10 +91,14 @@ class PhpCommandTest extends TestCase
         if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
             foreach ($phpZips as $zipFileName) {
                 $zipFilePath = $this->buildsDirectory . '/php/' . $zipFileName;
-                $innerZip = new ZipArchive();
-                if ($innerZip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
-                    $innerZip->addFromString("test_file.php", "<?php echo 'Hello, world!'; ?>");
-                    $innerZip->close();
+                if (str_ends_with($zipFileName, '.json')) {
+                    file_put_contents($zipFilePath, '{}');
+                } else {
+                    $innerZip = new ZipArchive();
+                    if ($innerZip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+                        $innerZip->addFromString("test_file.php", "<?php echo 'Hello, world!'; ?>");
+                        $innerZip->close();
+                    }
                 }
                 $zip->addFile($zipFilePath, $zipFileName);
             }
@@ -112,8 +121,15 @@ class PhpCommandTest extends TestCase
 
         $this->assertEquals(0, $result, "Command should return success.");
 
-        $expectedDestination = $this->baseDirectory . '/releases';
+        $expectedDestination = $this->baseDirectory . (str_contains($phpZips[0], '-dev-') ? '/qa' : '/releases');
         $this->assertDirectoryExists($expectedDestination, "Destination directory should exist.");
+        foreach (array_filter($phpZips, static fn (string $file): bool => str_ends_with($file, '.json')) as $sidecar) {
+            $this->assertFileExists($expectedDestination . '/' . $sidecar);
+            $this->assertFileExists($expectedDestination . '/archives/' . $sidecar);
+        }
+        $this->assertStringNotContainsString('.json', file_get_contents($expectedDestination . '/sha256sum.txt'));
+        $this->assertStringNotContainsString('.json', file_get_contents($expectedDestination . '/sha1sum.txt'));
+        $this->assertStringNotContainsString('.json', file_get_contents($expectedDestination . '/releases.json'));
     }
 
     public function testCommandHandlerWithMissingTestPackZip(): void

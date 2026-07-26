@@ -30,6 +30,7 @@
 - [`POST /api/php`](#post-apiphp)
 - [`POST /api/pecl`](#post-apipecl)
 - [`POST /api/winlibs`](#post-apiwinlibs)
+- [`POST /api/sbom-update`](#post-apisbom-update)
 - [`POST /api/series-init`](#post-apiseries-init)
 - [`POST /api/series-delete`](#post-apiseries-delete)
 - [`POST /api/series-update`](#post-apiseries-update)
@@ -283,6 +284,42 @@ curl -i -X POST \
             "ref": ""
         }' \
     https://downloads.php.net/api/series-update
+```
+
+---
+
+### POST /api/sbom-update
+
+- Auth: Required
+- Purpose: Queue PHP bundled-component metadata for SBOM generation.
+- Request body (JSON):
+    - `php_version` (string, required): Matches `^(\d+\.\d+|master)$`.
+    - `sbom` (object, required): PHP license and bundled-component metadata.
+- Success: `200 OK`, empty body.
+- Errors:
+    - `400` with validation details if the payload is invalid.
+    - `500` if `BUILDS_DIRECTORY` is not configured on the server.
+
+Example
+
+```bash
+curl -i -X POST \
+    -H "Authorization: Bearer $AUTH_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{
+            "php_version": "8.2",
+            "sbom": {
+                "license": "PHP-3.01",
+                "components": [{
+                    "name": "pcre2lib",
+                    "version": "10.40",
+                    "path": "ext/pcre/pcre2lib",
+                    "license": "BSD-3-Clause WITH PCRE2-exception",
+                    "purl": "pkg:generic/pcre2@10.40"
+                }]
+            }
+        }' \
+    https://downloads.php.net/api/sbom-update
 ```
 
 ---

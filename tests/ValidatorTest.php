@@ -23,6 +23,12 @@ class ValidatorTest extends TestCase {
         $this->assertFalse($validator->isValid, 'Validation should fail when required field is missing.');
     }
 
+    public function testValidateArrayField() {
+        $validator = new Validator(['items' => 'array']);
+        $validator->validate(['items' => []]);
+        $this->assertTrue($validator->isValid, 'Validation should pass when the field is an array.');
+    }
+
     public function testValidationRegexField() {
         $validator = new Validator(['date' => 'regex:/\d{4}-\d{2}-\d{2}/']);
         $validator->validate(['date' => '01/01/2025']);

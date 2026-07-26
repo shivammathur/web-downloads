@@ -66,6 +66,11 @@ class Validator implements Stringable
         return is_string($value);
     }
 
+    protected function array(mixed $value): bool
+    {
+        return is_array($value);
+    }
+
     protected function regex(mixed $value, ?string $pattern): bool
     {
         return is_string($value) && is_string($pattern) && preg_match($pattern, $value) === 1;
@@ -77,6 +82,7 @@ class Validator implements Stringable
             'required' => "The $field field is required.",
             'url' => "The $field field must be a valid URL.",
             'string' => "The $field field must be a string.",
+            'array' => "The $field field must be an array.",
             'regex' => "The $field field must match the pattern $value.",
         ];
 

@@ -1,0 +1,30 @@
+name: Publish PHP SBOM metadata
+run-name: Publish PHP ${{ inputs.php-version }} SBOM metadata
+on:
+  workflow_dispatch:
+    inputs:
+      php-version:
+        description: PHP version
+        required: true
+      sbom:
+        description: SBOM metadata JSON
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish
+        env:
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          PHP_VERSION: ${{ inputs.php-version }}
+          SBOM: ${{ inputs.sbom }}
+        run: |
+          jq --null-input --arg php_version "$PHP_VERSION" --argjson sbom "$SBOM" \
+             '{php_version: $php_version, sbom: $sbom}' > request.json
+          curl --fail-with-body \
+               --request POST \
+               --location https://downloads.php.net/api/sbom-update \
+               --header "Authorization: Bearer $AUTH_TOKEN" \
+               --header 'Content-Type: application/json' \
+               --data-binary @request.json

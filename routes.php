@@ -6,6 +6,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ListBuildsController;
 use App\Http\Controllers\PeclController;
 use App\Http\Controllers\PhpController;
+use App\Http\Controllers\SbomUpdateController;
 use App\Http\Controllers\SeriesDeleteController;
 use App\Http\Controllers\SeriesInitController;
 use App\Http\Controllers\SeriesStabilityController;
@@ -20,6 +21,7 @@ $router->registerRoute('/api/delete-pending-job', 'POST', DeletePendingJobContro
 $router->registerRoute('/api/pecl', 'POST', PeclController::class, true);
 $router->registerRoute('/api/winlibs', 'POST', WinlibsController::class, true);
 $router->registerRoute('/api/php', 'POST', PhpController::class, true);
+$router->registerRoute('/api/sbom-update', 'POST', SbomUpdateController::class, true);
 $router->registerRoute('/api/series-init', 'POST', SeriesInitController::class, true);
 $router->registerRoute('/api/series-delete', 'POST', SeriesDeleteController::class, true);
 $router->registerRoute('/api/series-update', 'POST', SeriesUpdateController::class, true);
