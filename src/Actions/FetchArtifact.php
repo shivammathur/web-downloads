@@ -29,7 +29,6 @@ class FetchArtifact
         $result = curl_exec($ch);
         $error = curl_error($ch);
         $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
         fclose($fp);
         if ($result === false) {
             unlink($filepath);
